@@ -35,6 +35,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+    #[ORM\Column(type: Types::SIMPLE_ARRAY)]
+    private array $roles = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -102,10 +105,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function getRoles(): array
     {
-//        $roles = $this->roles;
+        $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        // TODO: REFACTOR LATER
-        $roles[] = 'ROLE_USER';
+//        // TODO: REFACTOR LATER
+//        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -118,5 +121,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 }

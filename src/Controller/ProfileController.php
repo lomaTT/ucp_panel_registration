@@ -15,7 +15,8 @@ class ProfileController extends AbstractController
     public function index(Security $security): Response
     {
 
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+//        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+//        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $security->getUser();
         return $this->render('profile/index.html.twig', [
             'controller_name' => 'ProfileController',

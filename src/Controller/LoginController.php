@@ -16,8 +16,18 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class LoginController extends AbstractController
 {
     #[Route('/login', name: 'login_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Security $security): Response
     {
+        // TODO: REFACTOR TO METHOD isUser
+        if (!empty($security->getUser()) && in_array("ROLE_USER", $security->getUser()->getRoles())) {
+            return $this->redirect('/profile');
+        }
+
+        // TODO: REFACTOR TO METHOD isAdmin
+        if (!empty($security->getUser()) && in_array("ROLE_ADMIN", $security->getUser()->getRoles())) {
+            return $this->redirect('/admin/profile');
+        }
+
         $form = $this->createForm(LoginType::class);
 
         return $this->render('login/index.html.twig', [
@@ -43,9 +53,7 @@ class LoginController extends AbstractController
 
             $isPasswordValid = $passwordHasher->isPasswordValid($findedUser, $form->get('password')->getData());
             if ($isPasswordValid) {
-                $response = $security->login(user: $findedUser);
-
-                return $response;
+                return $security->login(user: $findedUser);
             } else {
                 return $this->render('login/index.html.twig', [
                     'controller_name' => 'LoginController',
